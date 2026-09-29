@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Universal Maladaptive Behavior Counter</title>
+<style>
+:root{--b:#d4d4d8;--bg:#f7f7f8;--c:#2563eb;--m:#71717a;--d:#b91c1c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;color:#18181b}
+main{max-width:900px;margin:auto;padding:12px}h1{font-size:1.35rem;margin:4px 0}.sub,.privacy,.credit{color:var(--m);font-size:.8rem;line-height:1.4}
+.top,.bottom{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+label{font-size:.85rem;font-weight:700}input,select,textarea,button{font:inherit}
+input[type=date],select,textarea,.context{width:100%;min-height:44px;border:1px solid var(--b);border-radius:10px;background:#fff;padding:10px;margin-top:5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+button{min-height:44px;border:1px solid var(--b);border-radius:10px;background:#fff;padding:9px 13px;font-weight:800}
+.primary,#plus{background:var(--c);color:#fff;border-color:var(--c)}
+.panel{background:#fff;border:1px solid var(--b);border-radius:14px;padding:12px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+#plus{min-width:150px;min-height:60px;font-size:1.2rem}#plus:disabled{opacity:.35}
+.wrap{overflow-x:auto;background:#fff;border:1px solid var(--b);border-radius:14px}
+table{width:100%;min-width:780px;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid var(--b);text-align:center}
+th{background:#f4f4f5;font-size:.8rem}th:first-child,td:first-child,th:last-child,td:last-child{text-align:left}
+.beh{font-weight:700;min-width:170px}.count{width:70px;min-height:44px;text-align:center;border:2px solid var(--b);border-radius:9px}
+.count:focus{outline:none;border-color:var(--c)}.context{min-width:190px;margin:0}.total{font-weight:800}
+.card{background:#fff;border:1px solid var(--b);border-radius:14px;padding:12px}.card h2{font-size:.95rem;margin:0 0 8px}
+textarea{min-height:110px}.empty{background:#fff;border:1px dashed var(--b);border-radius:14px;padding:22px;text-align:center;color:var(--m)}
+.manage{background:#fff;border:1px solid var(--b);border-radius:14px;padding:12px;margin:12px 0;display:none}
+.manage.open{display:block}.manage-row{display:flex;gap:8px;align-items:center;border-bottom:1px solid #eee;padding:8px 0}
+.manage-row span{flex:1;font-weight:700}.danger{color:var(--d);border-color:#fecaca}.credit{text-align:center;margin:18px 0 6px}
+@media(max-width:640px){.top,.bottom{grid-template-columns:1fr}.panel{flex-direction:column;align-items:stretch}#plus{width:100%}.actions button{flex:1}}
+</style>
+</head>
+<body>
+<main>
+<h1>Universal Maladaptive Behavior Counter</h1>
+<div class="sub">Create a behavior list for this device. Daily session data is temporary.</div>
+
+<div class="top">
+<label>Date<input id="date" type="date"></label>
+<label>Setting<select id="setting"><option>Preschool</option><option>Daycare</option><option>Home</option><option>Community</option><option>Other</option></select></label>
+</div>
+
+<div class="actions">
+<button class="primary" id="add">+ Add Behavior</button>
+<button id="manageBtn">Manage Behaviors</button>
+</div>
+
+<div id="manage" class="manage">
+<strong>Behaviors saved on this device</strong>
+<div id="manageList"></div>
+</div>
+
+<div class="panel">
+<div><small>Active counter</small><div id="activeLabel"><strong>Tap any frequency box below.</strong></div></div>
+<button id="plus" disabled>+1 Counter</button>
+</div>
+
+<div id="empty" class="empty"><strong>No behaviors configured yet.</strong><br>Tap “+ Add Behavior” to start.</div>
+<div id="wrap" class="wrap" hidden>
+<table>
+<thead><tr><th>Maladaptive behavior</th><th>Morning</th><th>Midday</th><th>Afternoon</th><th>Total</th><th>Context / activity</th></tr></thead>
+<tbody id="body"></tbody>
+</table>
+</div>
+
+<div class="bottom">
+<div class="card"><h2>Daily summary</h2><div id="summary" class="sub">No behaviors recorded yet.</div></div>
+<div class="card"><h2>General notes</h2><textarea id="notes" placeholder="Relevant session observations..."></textarea></div>
+</div>
+
+<button id="clear" class="danger">Clear Daily Data</button>
+<div class="privacy"><strong>Privacy:</strong> only the behavior names are saved locally on this device. Frequencies, contexts, date, setting, and notes are not saved or sent by this page. No client-identifying information is requested.</div>
+<div class="credit">Concept &amp; design: Jorge Morales + ChatGPT (OpenAI)</div>
+</main>
+
+<script>
+(function(){
+const KEY="universalMaladaptiveBehaviors_v1", periods=["Morning","Midday","Afternoon"];
+let behaviors=[],daily={},active=null;
+const $=id=>document.getElementById(id);
+
+function id(){return (crypto.randomUUID?crypto.randomUUID():"b"+Date.now()+Math.random());}
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(x)?x:[]}catch(e){return[]}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(behaviors))}catch(e){alert("Unable to save the behavior list on this device.")}}
+function state(k){return daily[k]||(daily[k]={Morning:0,Midday:0,Afternoon:0,context:""})}
+function today(){const d=new Date();$("date").value=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function resetActive(){active=null;$("plus").disabled=true;$("activeLabel").innerHTML="<strong>Tap any frequency box below.</strong>"}
+function choose(b,p,input){active={id:b.id,period:p,input};$("plus").disabled=false;$("activeLabel").innerHTML="<strong>"+escapeHtml(b.name)+" · "+p+"</strong>"}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]))}
+function num(v){v=parseInt(v,10);return Number.isFinite(v)?Math.max(0,Math.min(999,v)):0}
+
+function summary(){
+ let grand=0,best=0,bestName="";
+ behaviors.forEach(b=>{const s=state(b.id),t=s.Morning+s.Midday+s.Afternoon;grand+=t;if(t>best){best=t;bestName=b.name}const c=document.querySelector('[data-total="'+b.id+'"]');if(c)c.textContent=t});
+ $("summary").textContent=grand?("Total recorded events: "+grand+" · Highest frequency: "+bestName+" ("+best+")"):"No behaviors recorded yet.";
+}
+
+function render(){
+ $("body").innerHTML="";$("wrap").hidden=!behaviors.length;$("empty").hidden=!!behaviors.length;
+ behaviors.forEach(b=>{
+   const s=state(b.id),tr=document.createElement("tr"),name=document.createElement("td");
+   name.className="beh";name.textContent=b.name;tr.appendChild(name);
+   periods.forEach(p=>{
+     const td=document.createElement("td"),inp=document.createElement("input");
+     inp.className="count";inp.type="number";inp.min="0";inp.max="999";inp.value=s[p];
+     inp.onfocus=()=>choose(b,p,inp);inp.onclick=()=>choose(b,p,inp);
+     inp.oninput=()=>{s[p]=num(inp.value);inp.value=s[p];summary()};
+     td.appendChild(inp);tr.appendChild(td);
+   });
+   const tot=document.createElement("td");tot.className="total";tot.dataset.total=b.id;tr.appendChild(tot);
+   const ctd=document.createElement("td"),ctx=document.createElement("input");
+   ctx.className="context";ctx.placeholder="Transition, worktime, lunch…";ctx.value=s.context;ctx.oninput=()=>s.context=ctx.value;
+   ctd.appendChild(ctx);tr.appendChild(ctd);$("body").appendChild(tr);
+ });
+ renderManage();summary();
+}
+
+function renderManage(){
+ $("manageList").innerHTML="";
+ behaviors.forEach(b=>{
+   const r=document.createElement("div");r.className="manage-row";
+   const n=document.createElement("span");n.textContent=b.name;
+   const e=document.createElement("button");e.textContent="Edit";e.onclick=()=>{
+     let x=prompt("Edit behavior name:",b.name);if(x===null)return;x=x.trim().slice(0,80);if(!x)return;
+     if(behaviors.some(q=>q.id!==b.id&&q.name.toLowerCase()===x.toLowerCase()))return alert("That behavior is already in the list.");
+     b.name=x;save();render();
+   };
+   const d=document.createElement("button");d.textContent="Delete";d.className="danger";d.onclick=()=>{
+     if(!confirm('Delete "'+b.name+'" from this device?'))return;
+     behaviors=behaviors.filter(q=>q.id!==b.id);delete daily[b.id];if(active&&active.id===b.id)resetActive();save();render();
+   };
+   r.append(n,e,d);$("manageList").appendChild(r);
+ });
+ if(!behaviors.length)$("manageList").innerHTML='<div class="sub" style="margin-top:8px">No behaviors added yet.</div>';
+}
+
+$("add").onclick=()=>{
+ let name=prompt("Enter behavior name:");if(name===null)return;name=name.trim().slice(0,80);if(!name)return;
+ if(behaviors.some(b=>b.name.toLowerCase()===name.toLowerCase()))return alert("That behavior is already in the list.");
+ behaviors.push({id:id(),name});save();render();
+};
+$("manageBtn").onclick=()=>$("manage").classList.toggle("open");
+$("plus").onclick=()=>{if(!active)return;const s=state(active.id);s[active.period]=Math.min(999,s[active.period]+1);active.input.value=s[active.period];summary();active.input.focus()};
+$("clear").onclick=()=>{
+ const has=behaviors.some(b=>{const s=state(b.id);return s.Morning||s.Midday||s.Afternoon||s.context})||$("notes").value.trim();
+ if(has&&!confirm("Clear all daily counts, contexts, and notes? The behavior list will remain saved."))return;
+ daily={};behaviors.forEach(b=>state(b.id));$("notes").value="";resetActive();today();render();
+};
+
+behaviors=load();today();render();
+})();
+</script>
+</body>
+</html>
