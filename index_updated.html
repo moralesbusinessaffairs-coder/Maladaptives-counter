@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f7f7f8">
+<title>Daily Maladaptive Behavior Register</title>
+<style>
+:root {
+  --bg:#f7f7f8; --card:#fff; --text:#18181b; --muted:#71717a;
+  --border:#d4d4d8; --accent:#2563eb; --soft:#dbeafe; --danger:#b91c1c;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+main{max-width:880px;margin:auto;padding:14px}
+h1{font-size:1.3rem;margin:0 0 14px}
+.top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+label{font-size:.86rem;font-weight:700}
+input,select,textarea,button{font:inherit}
+input[type=date],select,textarea,.context{width:100%;min-height:44px;border:1px solid var(--border);border-radius:10px;background:#fff;padding:10px 12px;margin-top:5px}
+.panel{border:1px solid var(--border);border-radius:14px;background:var(--card);padding:14px;margin-bottom:12px;display:flex;gap:12px;align-items:center;justify-content:space-between}
+.panel small{display:block;color:var(--muted);margin-bottom:4px}
+#activeLabel{font-weight:800}
+#plusBtn{min-width:160px;min-height:62px;border:0;border-radius:14px;background:var(--accent);color:#fff;font-weight:900;font-size:1.25rem;padding:10px 20px}
+#plusBtn:disabled{opacity:.35}
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:#fff}
+table{width:100%;min-width:790px;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid var(--border);text-align:center}
+th{font-size:.8rem;background:#f4f4f5}
+th:first-child,td:first-child,th:last-child,td:last-child{text-align:left}
+.behavior{font-weight:700;min-width:185px}
+.count{width:74px;min-height:46px;text-align:center;border:2px solid var(--border);border-radius:10px;background:#fff;font-size:1.05rem}
+.count:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--soft)}
+.context{min-width:200px;margin:0}
+.total{font-weight:800}
+.bottom{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.card{border:1px solid var(--border);border-radius:14px;background:#fff;padding:14px}
+.card h2{font-size:.95rem;margin:0 0 10px}
+#summary{color:var(--muted);line-height:1.55}
+textarea{min-height:120px;resize:vertical}
+#clearBtn{margin-top:12px;min-height:48px;border:1px solid #fecaca;background:#fff;color:var(--danger);border-radius:12px;padding:10px 16px;font-weight:800}
+.note{font-size:.78rem;color:var(--muted);margin-top:10px}
+noscript div{border:1px solid #fca5a5;background:#fef2f2;padding:12px;border-radius:10px;margin-bottom:12px}
+@media(max-width:640px){
+  main{padding:10px}
+  .top,.bottom{grid-template-columns:1fr}
+  .panel{flex-direction:column;align-items:stretch}
+  #plusBtn{width:100%;min-height:68px;font-size:1.35rem}
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Daily Maladaptive Behavior Register</h1>
+
+  <noscript><div>This preview is not running JavaScript. Open the page in a web browser to use the +1 counter.</div></noscript>
+
+  <div class="top">
+    <label>Date<input id="regDate" type="date"></label>
+    <label>Setting
+      <select id="setting">
+        <option>Preschool</option>
+        <option>Daycare</option>
+        <option>Home</option>
+        <option>Community</option>
+        <option>Other</option>
+      </select>
+    </label>
+  </div>
+
+  <section class="panel">
+    <div>
+      <small>Active counter</small>
+      <div id="activeLabel">Tap any frequency box below.</div>
+    </div>
+    <button id="plusBtn" type="button" disabled>+1 Counter</button>
+  </section>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Maladaptive behavior</th>
+          <th>Morning</th>
+          <th>Midday</th>
+          <th>Afternoon</th>
+          <th>Total</th>
+          <th>Context / activity</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+      <tr>
+        <td class="behavior">Tantrum</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="0" data-name="Tantrum" data-period="Morning" aria-label="Tantrum morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="0" data-name="Tantrum" data-period="Midday" aria-label="Tantrum midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="0" data-name="Tantrum" data-period="Afternoon" aria-label="Tantrum afternoon"></td>
+        <td class="total" data-total="0">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Tantrum context"></td>
+      </tr>
+<tr>
+        <td class="behavior">Stereotypical behavior</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="1" data-name="Stereotypical behavior" data-period="Morning" aria-label="Stereotypical behavior morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="1" data-name="Stereotypical behavior" data-period="Midday" aria-label="Stereotypical behavior midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="1" data-name="Stereotypical behavior" data-period="Afternoon" aria-label="Stereotypical behavior afternoon"></td>
+        <td class="total" data-total="1">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Stereotypical behavior context"></td>
+      </tr>
+<tr>
+        <td class="behavior">Self-injurious behavior</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="2" data-name="Self-injurious behavior" data-period="Morning" aria-label="Self-injurious behavior morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="2" data-name="Self-injurious behavior" data-period="Midday" aria-label="Self-injurious behavior midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="2" data-name="Self-injurious behavior" data-period="Afternoon" aria-label="Self-injurious behavior afternoon"></td>
+        <td class="total" data-total="2">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Self-injurious behavior context"></td>
+      </tr>
+<tr>
+        <td class="behavior">Throwing objects</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="3" data-name="Throwing objects" data-period="Morning" aria-label="Throwing objects morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="3" data-name="Throwing objects" data-period="Midday" aria-label="Throwing objects midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="3" data-name="Throwing objects" data-period="Afternoon" aria-label="Throwing objects afternoon"></td>
+        <td class="total" data-total="3">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Throwing objects context"></td>
+      </tr>
+<tr>
+        <td class="behavior">Physical aggression</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="4" data-name="Physical aggression" data-period="Morning" aria-label="Physical aggression morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="4" data-name="Physical aggression" data-period="Midday" aria-label="Physical aggression midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="4" data-name="Physical aggression" data-period="Afternoon" aria-label="Physical aggression afternoon"></td>
+        <td class="total" data-total="4">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Physical aggression context"></td>
+      </tr>
+<tr>
+        <td class="behavior">Bolting / elopement</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="5" data-name="Bolting / elopement" data-period="Morning" aria-label="Bolting / elopement morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="5" data-name="Bolting / elopement" data-period="Midday" aria-label="Bolting / elopement midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="5" data-name="Bolting / elopement" data-period="Afternoon" aria-label="Bolting / elopement afternoon"></td>
+        <td class="total" data-total="5">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Bolting / elopement context"></td>
+      </tr>
+<tr>
+        <td class="behavior">Isolation</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="6" data-name="Isolation" data-period="Morning" aria-label="Isolation morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="6" data-name="Isolation" data-period="Midday" aria-label="Isolation midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="6" data-name="Isolation" data-period="Afternoon" aria-label="Isolation afternoon"></td>
+        <td class="total" data-total="6">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Isolation context"></td>
+      </tr>
+<tr>
+        <td class="behavior">Echolalia</td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="7" data-name="Echolalia" data-period="Morning" aria-label="Echolalia morning"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="7" data-name="Echolalia" data-period="Midday" aria-label="Echolalia midday"></td>
+        <td><input class="count" type="number" min="0" max="999" value="0" data-row="7" data-name="Echolalia" data-period="Afternoon" aria-label="Echolalia afternoon"></td>
+        <td class="total" data-total="7">0</td>
+        <td><input class="context" type="text" placeholder="Transition, worktime, lunch…" aria-label="Echolalia context"></td>
+      </tr>
+    
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bottom">
+    <section class="card">
+      <h2>Daily summary</h2>
+      <div id="summary">No behaviors recorded yet.</div>
+    </section>
+    <section class="card">
+      <h2>General notes</h2>
+      <textarea id="notes" placeholder="Antecedents, transitions, activities, environmental events, or relevant observations..."></textarea>
+    </section>
+  </div>
+
+  <button id="clearBtn" type="button">Clear register</button>
+  <div class="note">No client-identifying information is requested. This page does not save your counts or notes.</div>
+</main>
+
+<script>
+(function(){
+  var counts = Array.prototype.slice.call(document.querySelectorAll(".count"));
+  var plus = document.getElementById("plusBtn");
+  var activeLabel = document.getElementById("activeLabel");
+  var summary = document.getElementById("summary");
+  var active = null;
+
+  var now = new Date();
+  var y = now.getFullYear();
+  var m = String(now.getMonth()+1).padStart(2,"0");
+  var d = String(now.getDate()).padStart(2,"0");
+  document.getElementById("regDate").value = y + "-" + m + "-" + d;
+
+  function valueOf(el){
+    var n = parseInt(el.value,10);
+    if (!Number.isFinite(n) || n < 0) n = 0;
+    if (n > 999) n = 999;
+    el.value = n;
+    return n;
+  }
+
+  function choose(el){
+    active = el;
+    plus.disabled = false;
+    activeLabel.textContent = el.dataset.name + " · " + el.dataset.period;
+  }
+
+  function update(){
+    var grand = 0;
+    var bestName = "";
+    var best = 0;
+
+    for (var r=0; r<8; r++) {
+      var rowCounts = document.querySelectorAll('.count[data-row="' + r + '"]');
+      var total = 0;
+      rowCounts.forEach(function(el){ total += valueOf(el); });
+      document.querySelector('[data-total="' + r + '"]').textContent = total;
+      grand += total;
+      if (total > best) {
+        best = total;
+        bestName = rowCounts[0].dataset.name;
+      }
+    }
+
+    if (grand === 0) {
+      summary.textContent = "No behaviors recorded yet.";
+    } else {
+      summary.innerHTML = "<strong>Total recorded events:</strong> " + grand +
+        "<br><strong>Highest frequency:</strong> " + bestName + " (" + best + ")";
+    }
+  }
+
+  counts.forEach(function(el){
+    el.addEventListener("focus", function(){ choose(el); });
+    el.addEventListener("click", function(){ choose(el); });
+    el.addEventListener("input", update);
+  });
+
+  plus.addEventListener("click", function(){
+    if (!active) return;
+    active.value = Math.min(999, valueOf(active)+1);
+    update();
+    active.focus();
+  });
+
+  document.getElementById("clearBtn").addEventListener("click", function(){
+    counts.forEach(function(el){ el.value = 0; });
+    document.querySelectorAll(".context").forEach(function(el){ el.value = ""; });
+    document.getElementById("notes").value = "";
+    active = null;
+    plus.disabled = true;
+    activeLabel.textContent = "Tap any frequency box below.";
+    update();
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
